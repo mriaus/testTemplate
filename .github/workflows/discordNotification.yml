@@ -17,4 +17,4 @@ jobs:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
       uses: Ilshidur/action-discord@master
       with:
-        args: 'A new pull request has been created in {{ github.repository }} by {{ github.actor }}. Check it out: {{ github.event.pull_request.html_url }} <@&${{ DISCORD_ROL_ID }}>'
+        args: "A new pull request has been created in ${{ github.repository }} by ${{ github.actor }}. Check it out: ${{ github.event.pull_request.html_url }} <@&${{ secrets.DISCORD_ROL_ID }}>"
