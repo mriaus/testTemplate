@@ -3,6 +3,9 @@ name: Pull Request Discord Notification
 on:
   pull_request:
     types: [opened, synchronize]  # Para PR abiertas y actualizadas (con push)
+  push:
+    branches:
+      - '*'
 
 jobs:
   notify-discord:
@@ -20,8 +23,8 @@ jobs:
       with:
         args: "A new pull request has been created in ${{ github.repository }} by ${{ github.actor }}. Check it out: ${{ github.event.pull_request.html_url }} <@&${{ secrets.DISCORD_ROL_ID }}>"
 
-    - name: Discord notification for push after review
-      if: github.event_name == 'push' && github.event.ref == 'refs/heads/${{ github.event.pull_request.head.ref }}'  # Asegúrate de que el push es para la rama de la PR
+    - name: Discord notification for PR updated (on push)
+      if: github.event_name == 'push' && github.ref == 'refs/heads/${{ github.event.pull_request.head.ref }}'  # Asegúrate de que el push es para la rama de la PR
       env:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
       uses: Ilshidur/action-discord@master
