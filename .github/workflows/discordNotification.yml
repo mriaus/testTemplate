@@ -3,11 +3,6 @@ name: Pull Request Discord Notification
 on:
   pull_request:
     types: [opened, synchronize]  # Para PR abiertas y actualizadas (con push)
-  pull_request_review:
-    types: [submitted]  # Cuando se deja una revisión
-  push:
-    branches:
-      - main  # o la rama correspondiente, dependiendo de cómo gestiones tus ramas
 
 jobs:
   notify-discord:
@@ -25,26 +20,10 @@ jobs:
       with:
         args: "A new pull request has been created in ${{ github.repository }} by ${{ github.actor }}. Check it out: ${{ github.event.pull_request.html_url }} <@&${{ secrets.DISCORD_ROL_ID }}>"
 
-    - name: Discord notification for PR updated
-      if: github.event.action == 'synchronize'
-      env:
-        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-      uses: Ilshidur/action-discord@master
-      with:
-        args: "The pull request in ${{ github.repository }} has been updated by ${{ github.actor }}. Check it out: ${{ github.event.pull_request.html_url }} <@&${{ secrets.DISCORD_ROL_ID }}>"
-
-    - name: Discord notification for PR review submitted
-      if: github.event.action == 'submitted'  # Para el caso de una revisión enviada
-      env:
-        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-      uses: Ilshidur/action-discord@master
-      with:
-        args: "A review was submitted for PR in ${{ github.repository }} by ${{ github.actor }}. Check the review here: ${{ github.event.pull_request.html_url }} <@&${{ secrets.DISCORD_ROL_ID }}>"
-
     - name: Discord notification for push after review
       if: github.event_name == 'push' && github.event.ref == 'refs/heads/${{ github.event.pull_request.head.ref }}'  # Asegúrate de que el push es para la rama de la PR
       env:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
       uses: Ilshidur/action-discord@master
       with:
-        args: "A push has been made to the PR branch after addressing the comments. Check the updates: ${{ github.event.head_commit.url }} <@&${{ secrets.DISCORD_ROL_ID }}>"
+        args: "A PR has been updated. Check the updates: ${{ github.event.head_commit.url }} <@&${{ secrets.DISCORD_ROL_ID }}>"
